@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from .models import Post
 from .serializers import PostSerializer
 from django.http import Http404
+from drf_testing.permissions import IsOwnerOrReadOnly
 
 
 class PostList(APIView):
@@ -37,7 +38,7 @@ class PostDetail(APIView):
     Retrieve, update or delete a post by id.
     """
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def get_object(self, pk):
         try:
