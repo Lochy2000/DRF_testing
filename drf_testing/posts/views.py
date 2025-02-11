@@ -38,7 +38,7 @@ class PostDetail(APIView):
     Retrieve, update or delete a post by id.
     """
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+     
 
     def get_object(self, pk):
         try:
