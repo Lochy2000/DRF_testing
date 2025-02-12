@@ -18,7 +18,7 @@ class Post(models.Model):
         ('normal', 'Normal'),
         ('nashville', 'Nashville'),
         ('rise', 'Rise'),
-        ('toaster', 'Toaster'),
+        ('toaster', 'Toaster'), 
         ('valencia', 'Valencia'),
         ('walden', 'Walden'),
         ('xpro2', 'X-pro II')
