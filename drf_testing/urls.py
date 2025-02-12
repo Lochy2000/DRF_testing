@@ -24,9 +24,10 @@ urlpatterns = [
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
 
-    path('api/profiles/', include('profiles.urls')),
-    path('api/posts/', include('posts.urls')),
-    path('api/comments/', include('comments.urls')),
-    path('api/likes/', include('followers.urls')),
-    path('api/followers/', include('followers.urls')),
+    path('', include('profiles.urls')),
+    path('', include('posts.urls')),
+    path('', include('comments.urls')),
+    path('', include('likes.urls')),
+    path('', include('followers.urls')),
+
 ]
