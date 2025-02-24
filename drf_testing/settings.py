@@ -15,7 +15,7 @@ import os
 import dj_database_url
 
 if os.path.exists('env.py'):
-    import env
+    import DRF_testing.env as env
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'dpw2txejq',
@@ -63,7 +63,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEV' in os.environ
 
-ALLOWED_HOSTS = ['localhost', 'drftesting-caf88c0c0aca.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', 'drftesting-caf88c0c0aca.herokuapp.com','127.0.0.1']
 
 
 # Application definition
@@ -110,9 +110,10 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
-if 'CLIENT_ORIGIN' in os.environ:
+if 'CLIENT_ORIGIN' in os.environ and 'CLIENT_ORIGIN_DEV' in os.environ:
      CORS_ALLOWED_ORIGINS = [
-         os.environ.get('CLIENT_ORIGIN')
+         os.environ.get('CLIENT_ORIGIN'),
+         os.environ.get('CLIENT_ORIGIN_DEV')
      ]
 else:
      CORS_ALLOWED_ORIGIN_REGEXES = [
