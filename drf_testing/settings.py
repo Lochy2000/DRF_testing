@@ -151,11 +151,6 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     "X-CSRFToken",
 ]
 
-CORS_ALLOW_CREDENTIALS = True #allows cookies
-CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SECURE = True  # Set False for local development
-SESSION_COOKIE_SECURE = True  # Set False for local development
-SESSION_COOKIE_SAMESITE = 'None'  # Required for cross-origin auth
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
 
