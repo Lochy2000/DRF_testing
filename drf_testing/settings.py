@@ -45,6 +45,9 @@ if 'DEV' not in os.environ:
         'rest_framework.renderers.JSONRenderer',
     ]
 
+if 'DEV' in os.environ:
+    JWT_AUTH_SECURE = False
+
 REST_USE_JWT = True
 JWT_AUTH_SECURE = True
 JWT_AUTH_COOKIE = 'my-app-auth'
@@ -120,6 +123,11 @@ else:
          r"^https:\/\/.*\.codeinstitute-ide\.net$",
      ]
      
+CSRF_TRUSTED_ORIGINS = [
+    "https://react-p5-test-3e9d984aefe4.herokuapp.com",
+    "http://localhost:3000"
+]
+
 CORS_ALLOW_CREDENTIALS = True #allows cookies
 
 ROOT_URLCONF = 'drf_testing.urls'
