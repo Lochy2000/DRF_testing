@@ -29,11 +29,10 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [(
-        'rest_framework.authentication.SessionAuthentication'
-        if 'DEV' in os.environ
-        else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
-    )],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    'rest_framework.authentication.SessionAuthentication',
+    ],
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
@@ -45,14 +44,17 @@ if 'DEV' not in os.environ:
         'rest_framework.renderers.JSONRenderer',
     ]
 
-if 'DEV' in os.environ:
-    JWT_AUTH_SECURE = False
 
 REST_USE_JWT = True
 JWT_AUTH_SECURE = True
 JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
+
+if 'DEV' in os.environ:
+    JWT_AUTH_SECURE = False  # Allow HTTP for localhost
+    SESSION_COOKIE_SECURE = False  # Allow session cookies for HTTP
+
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'drf_api.serializers.CurrentUserSerializer'
@@ -127,8 +129,12 @@ CSRF_TRUSTED_ORIGINS = [
     "https://react-p5-test-3e9d984aefe4.herokuapp.com",
     "http://localhost:3000"
 ]
-
 CORS_ALLOW_CREDENTIALS = True #allows cookies
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = True  # Set False for local development
+SESSION_COOKIE_SECURE = True  # Set False for local development
+SESSION_COOKIE_SAMESITE = 'None'  # Required for cross-origin auth
+
 
 ROOT_URLCONF = 'drf_testing.urls'
 
