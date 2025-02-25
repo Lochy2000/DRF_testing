@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from corsheaders.defaults import default_headers
 
 if os.path.exists('env.py'):
     import DRF_testing.env as env
@@ -128,10 +129,28 @@ else:
          r"^https:\/\/.*\.codeinstitute-ide\.net$",
      ]
      
+CORS_ALLOWED_ORIGINS = [
+    "https://react-p5-test-3e9d984aefe4.herokuapp.com",
+    "http://localhost:3000",
+]
+
 CSRF_TRUSTED_ORIGINS = [
     "https://react-p5-test-3e9d984aefe4.herokuapp.com",
-    "http://localhost:3000"
+    "http://localhost:3000",
 ]
+
+CORS_ALLOW_CREDENTIALS = True  # Allows sending cookies for authentication
+CSRF_COOKIE_SECURE = False  # Disable this for local testing, enable in production
+SESSION_COOKIE_SECURE = False  # Same as above
+CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SAMESITE = "None"  # Allows cross-origin authentication
+
+# Allow frontend to send Authorization headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "Authorization",
+    "X-CSRFToken",
+]
+
 CORS_ALLOW_CREDENTIALS = True #allows cookies
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SECURE = True  # Set False for local development
