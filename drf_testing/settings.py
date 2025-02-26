@@ -1,11 +1,10 @@
 """
-Django settings for drf_testing project - revised for correct JWT authentication
+Django settings for drf_testing project - SIMPLIFIED for JWT authentication only
 """
 
 from pathlib import Path
 import os
 import dj_database_url
-from corsheaders.defaults import default_headers
 from datetime import timedelta
 
 if os.path.exists('env.py'):
@@ -71,17 +70,19 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # IMPORTANT: CSRF middleware is commented out for API-only JWT auth
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
 
-# REST Framework settings
+# REST Framework settings - SIMPLIFIED for JWT only
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        # Remove SessionAuthentication to avoid CSRF complications
+        # 'rest_framework.authentication.SessionAuthentication',
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ],
     'DEFAULT_FILTER_BACKENDS': [
@@ -138,35 +139,28 @@ REST_AUTH_SERIALIZERS = {
     'JWT_SERIALIZER': 'dj_rest_auth.serializers.JWTSerializer',
 }
 
-# CORS settings
+# CORS settings - SIMPLIFIED
 CORS_ALLOWED_ORIGINS = [
-    "https://react-p5-test-3e9d984aefe4.herokuapp.com",
-    "http://localhost:3000",
-]
-
-CSRF_TRUSTED_ORIGINS = [
     "https://react-p5-test-3e9d984aefe4.herokuapp.com",
     "http://localhost:3000",
 ]
 
 # CORS and cookie settings
 CORS_ALLOW_CREDENTIALS = True  # Allows sending cookies for authentication
-CSRF_COOKIE_SECURE = not 'DEV' in os.environ
-SESSION_COOKIE_SECURE = not 'DEV' in os.environ
-CSRF_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_HTTPONLY = False  # Set to True in production for better security
-CSRF_USE_SESSIONS = True
+CORS_ALLOW_ALL_ORIGINS = False
 
-# Allow frontend to send Authorization headers
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    "Authorization",
-    "X-CSRFToken",
-    "Content-Type",
+# Essential for cross-domain cookies
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
 ]
-
-CSRF_COOKIE_NAME = "csrftoken"
-CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
 
 # URLs and templates
 ROOT_URLCONF = 'drf_testing.urls'
