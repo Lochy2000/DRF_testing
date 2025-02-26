@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .views import root_route
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 urlpatterns = [
     path('', root_route),
@@ -27,8 +27,9 @@ urlpatterns = [
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     
-    # Add token refresh endpoint explicitly
+    # Add token refresh endpoints explicitly
     path('dj-rest-auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('dj-rest-auth/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     
     # Your app URLs
     path('', include('profiles.urls')),
