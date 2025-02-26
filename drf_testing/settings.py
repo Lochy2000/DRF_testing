@@ -156,6 +156,7 @@ SESSION_COOKIE_SECURE = not 'DEV' in os.environ
 CSRF_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_HTTPONLY = False  # Set to True in production for better security
+CSRF_USE_SESSIONS = True
 
 # Allow frontend to send Authorization headers
 CORS_ALLOW_HEADERS = list(default_headers) + [
