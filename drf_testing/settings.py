@@ -1,5 +1,5 @@
 """
-Django settings for drf_testing project - PURE JWT CONFIGURATION
+Django settings for drf_testing project - PURE JWT CONFIGURATION (with required authtoken app)
 """
 
 from pathlib import Path
@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     # Third-party apps
     'rest_framework',
     'django_filters',
+    # Must keep authtoken app for dj-rest-auth compatibility
+    'rest_framework.authtoken',
     'dj_rest_auth',
     'django.contrib.sites',
     'allauth',
@@ -97,7 +99,7 @@ JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
 JWT_AUTH_SECURE = not 'DEV' in os.environ
 
-# Make sure dj-rest-auth returns JWT tokens
+# Additional setting to explicitly tell dj-rest-auth to use JWT
 REST_AUTH = {
     'USE_JWT': True,
     'JWT_AUTH_COOKIE': 'my-app-auth',
