@@ -1,5 +1,5 @@
 """
-Django settings for drf_testing project - SIMPLIFIED for JWT authentication only
+Django settings for drf_testing project - PURE JWT CONFIGURATION
 """
 
 from pathlib import Path
@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     # Third-party apps
     'rest_framework',
     'django_filters',
-    'rest_framework.authtoken',
     'dj_rest_auth',
     'django.contrib.sites',
     'allauth',
@@ -70,7 +69,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # IMPORTANT: CSRF middleware is commented out for API-only JWT auth
+    # CSRF middleware is commented out for API-only JWT auth
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -78,11 +77,9 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
-# REST Framework settings - SIMPLIFIED for JWT only
+# REST Framework settings - JWT ONLY
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # Remove SessionAuthentication to avoid CSRF complications
-        # 'rest_framework.authentication.SessionAuthentication',
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ],
     'DEFAULT_FILTER_BACKENDS': [
@@ -93,12 +90,19 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT': '%d %b %Y',
 }
 
-# JWT settings
+# JWT settings - CRITICAL for proper JWT auth
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
 JWT_AUTH_SECURE = not 'DEV' in os.environ
+
+# Make sure dj-rest-auth returns JWT tokens
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'my-app-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-token',
+}
 
 # Important: Set up specific SimpleJWT settings
 SIMPLE_JWT = {
@@ -139,7 +143,7 @@ REST_AUTH_SERIALIZERS = {
     'JWT_SERIALIZER': 'dj_rest_auth.serializers.JWTSerializer',
 }
 
-# CORS settings - SIMPLIFIED
+# CORS settings
 CORS_ALLOWED_ORIGINS = [
     "https://react-p5-test-3e9d984aefe4.herokuapp.com",
     "http://localhost:3000",
@@ -147,7 +151,6 @@ CORS_ALLOWED_ORIGINS = [
 
 # CORS and cookie settings
 CORS_ALLOW_CREDENTIALS = True  # Allows sending cookies for authentication
-CORS_ALLOW_ALL_ORIGINS = False
 
 # Essential for cross-domain cookies
 CORS_ALLOW_HEADERS = [
