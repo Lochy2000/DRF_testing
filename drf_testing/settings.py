@@ -14,21 +14,71 @@ from pathlib import Path
 import os
 import dj_database_url
 from corsheaders.defaults import default_headers
+from datetime import timedelta
 
 if os.path.exists('env.py'):
     import DRF_testing.env as env
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dpw2txejq',
-    'API_KEY': '255976955765749',
-    'API_SECRET': 'eDYxpP0kpb5XO_yK_M7LxxIlR-I'
-}
-MEDIA_URL = '/MEDIA/'
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv('SECRET_KEY')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = 'DEV' in os.environ
+
+ALLOWED_HOSTS = ['localhost', 'drftesting-caf88c0c0aca.herokuapp.com', '127.0.0.1']
+
+# Application definition
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'cloudinary_storage',
+    'django.contrib.staticfiles',
+    'cloudinary',
+    'rest_framework',
+    'django_filters',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
+    'corsheaders',
+    'rest_framework_simplejwt.token_blacklist',  # Add this for token refresh
+    
+    # Your custom apps
+    'followers',
+    'likes',
+    'comments',
+    'posts',
+    'profiles',
+]
+
+SITE_ID = 1
+
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # CORS middleware first
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+]
+
+# REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [(
         'rest_framework.authentication.SessionAuthentication'
@@ -49,85 +99,27 @@ if 'DEV' not in os.environ:
         'rest_framework.renderers.JSONRenderer',
     ]
 
+# JWT settings
 REST_USE_JWT = True
-JWT_AUTH_SECURE = True
+JWT_AUTH_SECURE = not 'DEV' in os.environ
 JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
 
-if 'DEV' in os.environ:
-    JWT_AUTH_SECURE = False  # Allow HTTP for localhost
-    SESSION_COOKIE_SECURE = False  # Allow session cookies for HTTP
+# Simple JWT additional settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
 
+# User details serializer for dj-rest-auth
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'drf_api.serializers.CurrentUserSerializer'
 }
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'DEV' in os.environ
-
-ALLOWED_HOSTS = ['localhost', 'drftesting-caf88c0c0aca.herokuapp.com', '127.0.0.1']
-
-# Application definition
-
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'cloudinary_storage',
-    'django.contrib.staticfiles',
-    'cloudinary',
-    'rest_framework',
-    'django_filters',
-    'rest_framework.authtoken',
-    'dj_rest_auth',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'dj_rest_auth.registration',
-    'corsheaders',
-
-    'followers',
-    'likes',
-    'comments',
-    'posts',
-    'profiles',
-]
-
-SITE_ID = 1
-
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
-]
-
-if 'CLIENT_ORIGIN' in os.environ and 'CLIENT_ORIGIN_DEV' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN'),
-        os.environ.get('CLIENT_ORIGIN_DEV')
-    ]
-else:
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        r"^https:\/\/.*\.codeinstitute-ide\.net$",
-    ]
-
+# CORS settings
 CORS_ALLOWED_ORIGINS = [
     "https://react-p5-test-3e9d984aefe4.herokuapp.com",
     "http://localhost:3000",
@@ -138,21 +130,25 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
 
+# CORS and cookie settings
 CORS_ALLOW_CREDENTIALS = True  # Allows sending cookies for authentication
-CSRF_COOKIE_SECURE = False  # Disable this for local testing, enable in production
-SESSION_COOKIE_SECURE = False  # Same as above
-CSRF_COOKIE_HTTPONLY = False
-SESSION_COOKIE_SAMESITE = "None"  # Allows cross-origin authentication
+CSRF_COOKIE_SECURE = not 'DEV' in os.environ
+SESSION_COOKIE_SECURE = not 'DEV' in os.environ
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_HTTPONLY = False  # Set to True in production for better security
 
 # Allow frontend to send Authorization headers
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "Authorization",
     "X-CSRFToken",
+    "Content-Type",
 ]
 
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
 
+# URLs and templates
 ROOT_URLCONF = 'drf_testing.urls'
 
 TEMPLATES = [
@@ -174,8 +170,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'drf_testing.wsgi.application'
 
 # Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 if 'DEV' in os.environ:
     DATABASES = {
         'default': {
@@ -189,8 +183,6 @@ else:
     }
 
 # Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -207,24 +199,23 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
+# Static files
 STATIC_URL = '/static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+# Media files
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dpw2txejq',
+    'API_KEY': '255976955765749',
+    'API_SECRET': 'eDYxpP0kpb5XO_yK_M7LxxIlR-I'
+}
+MEDIA_URL = '/MEDIA/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
