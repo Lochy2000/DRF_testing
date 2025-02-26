@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cloudinary',
     'rest_framework',
-    'django_filters',
     'rest_framework.authtoken',
     'dj_rest_auth',
     'django.contrib.sites',
@@ -53,7 +52,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'dj_rest_auth.registration',
     'corsheaders',
-    'rest_framework_simplejwt.token_blacklist',  # Add this for token refresh
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     
     # Your custom apps
     'followers',
@@ -101,10 +101,24 @@ if 'DEV' not in os.environ:
 
 # JWT settings
 REST_USE_JWT = True
-JWT_AUTH_SECURE = not 'DEV' in os.environ
 JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
+
+if 'DEV' not in os.environ:
+    JWT_AUTH_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+else:
+    JWT_AUTH_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
+
+    # CORS and cookie settings
+CORS_ALLOW_CREDENTIALS = True  # Allows sending cookies for authentication
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_HTTPONLY = False  # Set to True in production for better security
 
 # Simple JWT additional settings
 SIMPLE_JWT = {
@@ -130,13 +144,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
 
-# CORS and cookie settings
-CORS_ALLOW_CREDENTIALS = True  # Allows sending cookies for authentication
-CSRF_COOKIE_SECURE = not 'DEV' in os.environ
-SESSION_COOKIE_SECURE = not 'DEV' in os.environ
-CSRF_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_HTTPONLY = False  # Set to True in production for better security
+
 
 # Allow frontend to send Authorization headers
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -219,3 +227,28 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 6. Configure SIMPLE_JWT properly:
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Short lived
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'JTI_CLAIM': 'jti',
+}
+
+# 7. Token auth serializer for dj-rest-auth
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'drf_api.serializers.CurrentUserSerializer',
+    'TOKEN_SERIALIZER': 'dj_rest_auth.serializers.TokenSerializer',
+}
