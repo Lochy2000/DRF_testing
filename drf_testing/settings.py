@@ -153,6 +153,7 @@ CORS_ALLOWED_ORIGINS = [
 
 # CORS and cookie settings
 CORS_ALLOW_CREDENTIALS = True  # Allows sending cookies for authentication
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 
 # Essential for cross-domain cookies
 CORS_ALLOW_HEADERS = [
@@ -163,7 +164,6 @@ CORS_ALLOW_HEADERS = [
     "dnt",
     "origin",
     "user-agent",
-    "x-csrftoken",
     "x-requested-with",
 ]
 
