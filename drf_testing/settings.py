@@ -114,6 +114,18 @@ CORS_ALLOWED_ORIGINS = [
 # CORS and cookie settings
 CORS_ALLOW_CREDENTIALS = True  # Allows sending cookies for authentication
 
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 # URLs and templates
 ROOT_URLCONF = 'drf_testing.urls'
 
