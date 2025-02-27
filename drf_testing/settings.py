@@ -79,6 +79,13 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
+# Additional setting to explicitly tell dj-rest-auth to use JWT
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'my-app-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-token',
+}
+
 # REST Framework settings - JWT ONLY
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -99,12 +106,6 @@ JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
 JWT_AUTH_SECURE = not 'DEV' in os.environ
 
-# Additional setting to explicitly tell dj-rest-auth to use JWT
-REST_AUTH = {
-    'USE_JWT': True,
-    'JWT_AUTH_COOKIE': 'my-app-auth',
-    'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-token',
-}
 
 # Important: Set up specific SimpleJWT settings
 SIMPLE_JWT = {
