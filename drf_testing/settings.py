@@ -74,7 +74,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
-
+REST_USE_JWT = True
+JWT_AUTH = {
+    'JWT_COOKIE_SECURE': True,
+    'JWT_AUTH_COOKIE': 'my-app-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-token',
+    'JWT_AUTH_SAMESITE': 'None',
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': timedelta(minutes=60),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=1),
+}
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [(
@@ -94,11 +103,7 @@ if 'DEV' not in os.environ:
     ]
 
 # JWT settings
-REST_USE_JWT = True
-JWT_AUTH_SECURE = True
-JWT_AUTH_COOKIE = 'my-app-auth'
-JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
-JWT_AUTH_SAMESITE = 'None'
+
 
 # User details serializer for dj-rest-auth
 REST_AUTH_SERIALIZERS = {
@@ -113,19 +118,7 @@ CORS_ALLOWED_ORIGINS = [
 
 # CORS and cookie settings
 CORS_ALLOW_CREDENTIALS = True  # Allows sending cookies for authentication
-
-CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "accept-encoding",
-    "authorization",
-    "content-type",
-    "dnt",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-]
+CSRF_COOKIE_SAMESITE = 'None'
 # URLs and templates
 ROOT_URLCONF = 'drf_testing.urls'
 
