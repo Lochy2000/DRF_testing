@@ -132,7 +132,7 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
-ROOT_URLCONF = 'drf_api.urls'
+ROOT_URLCONF = 'drf_testing.urls'
 
 TEMPLATES = [
     {
@@ -150,7 +150,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'drf_api.wsgi.application'
+WSGI_APPLICATION = 'drf_testing.wsgi.application'
 
 
 # Database
