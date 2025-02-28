@@ -16,31 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .views import root_route
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView
-)
 
 urlpatterns = [
     path('', root_route),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    
-    # Authentication endpoints
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
-    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    
-    # Explicit JWT token endpoints
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-    
-    # Make sure dj-rest-auth also has these same endpoints
-    path('dj-rest-auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('dj-rest-auth/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-    
-    # Your app URLs
+    path(
+        'dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')
+    ),
     path('', include('profiles.urls')),
     path('', include('posts.urls')),
     path('', include('comments.urls')),
