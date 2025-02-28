@@ -62,13 +62,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = [
-    os.environ.get('ALLOWED_HOST'),
+    'drftesting-caf88c0c0aca.herokuapp.com', 
     'localhost',
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React local development
-    "https://reactfrontend-yourapp.herokuapp.com",  #  deployed frontend
+    "https://react-p5-test-3e9d984aefe4.herokuapp.com",  #  deployed frontend
 ]
 
 if 'CLIENT_ORIGIN' in os.environ:
