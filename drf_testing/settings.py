@@ -62,22 +62,29 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = [
-    os.environ.get('ALLOWED_HOST'),
+    os.environ.get('ALLOWED_HOST', 'https://drftesting-caf88c0c0aca.herokuapp.com'),
     'localhost',
 ]
 
+CORS_ALLOWED_ORIGINS = []
+
 if 'CLIENT_ORIGIN' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN')
-    ]
+    CORS_ALLOWED_ORIGINS.append(os.environ.get('CLIENT_ORIGIN'))
 
 if 'CLIENT_ORIGIN_DEV' in os.environ:
-    extracted_url = re.match(
-        r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE
-    ).group(0)
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
-    ]
+    client_dev_origin = os.environ.get('CLIENT_ORIGIN_DEV', '')
+    
+    # Allow localhost directly instead of using regex
+    if "localhost" in client_dev_origin:
+        CORS_ALLOWED_ORIGINS.append(client_dev_origin)
+    else:
+        match = re.match(r'^.+-', client_dev_origin, re.IGNORECASE)
+        if match:
+            extracted_url = match.group(0)
+            CORS_ALLOWED_ORIGIN_REGEXES = [
+                rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
+            ]
+
 
 CORS_ALLOW_CREDENTIALS = True
 
