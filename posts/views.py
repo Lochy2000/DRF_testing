@@ -4,7 +4,24 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_testing.permissions import IsOwnerOrReadOnly
 from .models import Post
 from .serializers import PostSerializer
+from rest_framework.views import exception_handler
+from rest_framework.response import Response
+from rest_framework import status
+import traceback
 
+# Custom exception handler
+def custom_exception_handler(exc, context):
+    # Call REST framework's default exception handler first
+    response = exception_handler(exc, context)
+    
+    # If it's an unhandled exception, add more details
+    if response is None:
+        return Response({
+            'error': str(exc),
+            'traceback': traceback.format_exc()
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    return response
 
 class PostList(generics.ListCreateAPIView):
     """
