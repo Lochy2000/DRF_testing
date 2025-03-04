@@ -39,7 +39,10 @@ class PostList(generics.ListCreateAPIView):
     ]
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        print("Starting image upload to Cloudinary...")
+        instance = serializer.save(owner=self.request.user)
+        print(f"Image URL after save: {instance.image.url if instance.image else 'No image'}")
+        return instance
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):

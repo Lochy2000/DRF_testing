@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 
 class Post(models.Model):
@@ -28,8 +29,14 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     content = models.TextField(blank=True)
-    image = models.ImageField(
-        upload_to='images/', default='../default_post_o0lbny', blank=True
+    image = CloudinaryField(
+        'image', 
+        folder='images/',
+        transformation={
+            'quality': 'auto',
+            'fetch_format': 'auto',
+        },
+        default='default_post_o0lbny'
     )
     image_filter = models.CharField(
         max_length=32, choices=image_filter_choices, default='normal'
